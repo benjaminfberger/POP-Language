@@ -5,6 +5,7 @@ namespace src.parsing
         public static readonly Dictionary<string, tokenType> table = new Dictionary<string, tokenType>{
             { "identify", tokenType.identify },
             { "identity", tokenType.identity },
+            { "identifier", tokenType.identifier },
             { "let", tokenType.let },
             { "sudo", tokenType.sudo },
             { "program", tokenType.program },

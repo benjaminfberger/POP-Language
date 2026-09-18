@@ -53,7 +53,7 @@ namespace src.parsing
                             string word = source[startIndex..currentIndex];
                             if (word != "eof")
                             {
-                                tokenType tokenType = keywords.table.TryGetValue(word, out var type) ? type : tokenType.identity;
+                                tokenType tokenType = keywords.table.TryGetValue(word, out var type) ? type : tokenType.identifier;
                                 tokens.Add(new token(tokenType, word, line));
                             }
                         }

@@ -15,7 +15,7 @@ namespace tests
             List<token> expected = new List<token>
             {
                 new token(tokenType.let, "let", 0),
-                new token(tokenType.identity, "SUDO", 0),
+                new token(tokenType.identifier, "SUDO", 0),
                 new token(tokenType.run, "run", 0),
                 new token(tokenType.eof, "eof", 0)
             };
@@ -54,7 +54,7 @@ namespace tests
             List<token> actual = tokenizer.tokenize();
             List<token> expected = new List<token>
             {
-                new token(tokenType.identity, "sudoinit", 0),
+                new token(tokenType.identifier, "sudoinit", 0),
                 new token(tokenType.eof, "eof", 0)
             };
             Assert.That(actual, Is.EqualTo(expected));
@@ -70,7 +70,7 @@ namespace tests
                 new token(tokenType.warn, "warn", 0),
                 new token(tokenType.leftBrace, "{", 0),
                 new token(tokenType.halt, "halt", 0),
-                new token(tokenType.identity, "genericIdentity", 0),
+                new token(tokenType.identifier, "genericIdentity", 0),
                 new token(tokenType.rightBrace, "}", 0),
                 new token(tokenType.eof, "eof", 0)
             };
@@ -87,7 +87,7 @@ namespace tests
                 new token(tokenType.warn, "warn", 0),
                 new token(tokenType.halt, "halt", 0),
                 new token(tokenType.init, "init", 0),
-                new token(tokenType.identity, "genericIdentity", 1),
+                new token(tokenType.identifier, "genericIdentity", 1),
                 new token(tokenType.eof, "eof", 1)
             };
             Assert.That(actual, Is.EqualTo(expected));

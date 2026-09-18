@@ -4,6 +4,7 @@ namespace src.parsing
     {
         identify,
         identity,
+        identifier,
         let,
         sudo,
         program,
