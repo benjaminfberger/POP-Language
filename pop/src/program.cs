@@ -1,4 +1,4 @@
-﻿namespace POP
+﻿namespace pop
 {
     internal class Program
     {
