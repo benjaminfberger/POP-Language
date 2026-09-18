@@ -1,4 +1,4 @@
-using System.Transactions;
+using pop.parsing;
 
 namespace src.parsing
 {
@@ -12,13 +12,11 @@ namespace src.parsing
             int currentIndex = 0;
             int startIndex = 0;
             int line = 0;
-            do
+            while (currentIndex < source.Length)
             {
                 char current = source[currentIndex];
                 startIndex = currentIndex;
                 currentIndex++;
-
-
 
                 switch (current)
                 {
@@ -44,11 +42,26 @@ namespace src.parsing
                         break;
 
                     default:
+                        if (char.IsLetter(current) || current == '_')
+                        {
+                            while (currentIndex < source.Length &&
+                                (char.IsLetterOrDigit(source[currentIndex]) ||
+                                source[currentIndex] == '_'))
+                                currentIndex++;
+
+                            string word = source[startIndex..currentIndex];
+                            tokenType tokenType = keywords.table.TryGetValue(word, out tokenType type) ? type : tokenType.identity;
+
+                            tokens.Add(new token(tokenType, word, line));
+                        }
+                        else
+                            throw new tokenizationException("unknown character", line, current.ToString());
                         break;
                 }
 
-            } while (currentIndex < source.Length);
+            }
 
+            tokens.Add(new token(tokenType.eof, "eof", line));
 
             return tokens;
         }
