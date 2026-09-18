@@ -22,6 +22,7 @@ namespace src.parsing
                 {
                     case ' ':
                     case '\t':
+                    case '\0':
                         break;
 
                     case '\n':
@@ -50,9 +51,11 @@ namespace src.parsing
                                 currentIndex++;
 
                             string word = source[startIndex..currentIndex];
-                            tokenType tokenType = keywords.table.TryGetValue(word, out tokenType type) ? type : tokenType.identity;
-
-                            tokens.Add(new token(tokenType, word, line));
+                            if (word != "eof")
+                            {
+                                tokenType tokenType = keywords.table.TryGetValue(word, out var type) ? type : tokenType.identity;
+                                tokens.Add(new token(tokenType, word, line));
+                            }
                         }
                         else
                             throw new tokenizationException("unknown character", line, current.ToString());

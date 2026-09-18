@@ -1,0 +1,110 @@
+﻿using src.parsing;
+
+namespace tests
+{
+    [TestFixture]
+    public class tokenizerTests
+    {
+        tokenizer tokenizer;
+        [Test]
+        public void tokenizeShouldTreatCapitalizedKeywordsAsIndentities()
+        {
+            string source = "let SUDO run";
+            tokenizer = new tokenizer(source);
+            List<token> actual = tokenizer.tokenize();
+            List<token> expected = new List<token>
+            {
+                new token(tokenType.let, "let", 0),
+                new token(tokenType.identity, "SUDO", 0),
+                new token(tokenType.run, "run", 0),
+                new token(tokenType.eof, "eof", 0)
+            };
+            Assert.That(actual, Is.EqualTo(expected));
+        }
+        [Test]
+        public void tokenizeShouldReturnEofAsLastToken()
+        {
+            string source = "init";
+            tokenizer = new tokenizer(source);
+            List<token> actual = tokenizer.tokenize();
+            List<token> expected = new List<token>
+            {
+                new token(tokenType.init, "init", 0),
+                new token(tokenType.eof, "eof", 0)
+            };
+            Assert.That(actual, Is.EqualTo(expected));
+        }
+        [Test]
+        public void tokenizeShouldReturnOnlyEofForEmptyString()
+        {
+            string source = string.Empty;
+            tokenizer = new tokenizer(source);
+            List<token> actual = tokenizer.tokenize();
+            List<token> expected = new List<token>
+            {
+                new token(tokenType.eof, "eof", 0)
+            };
+            Assert.That(actual, Is.EqualTo(expected));
+        }
+        [Test]
+        public void tokenizeShouldNotDistinguishKeywordsWithinWords()
+        {
+            string source = "sudoinit";
+            tokenizer = new tokenizer(source);
+            List<token> actual = tokenizer.tokenize();
+            List<token> expected = new List<token>
+            {
+                new token(tokenType.identity, "sudoinit", 0),
+                new token(tokenType.eof, "eof", 0)
+            };
+            Assert.That(actual, Is.EqualTo(expected));
+        }
+        [Test]
+        public void tokenizeShouldHandleKeywordsAdjacentToSymbols()
+        {
+            string source = "warn{halt genericIdentity}";
+            tokenizer = new tokenizer(source);
+            List<token> actual = tokenizer.tokenize();
+            List<token> expected = new List<token>
+            {
+                new token(tokenType.warn, "warn", 0),
+                new token(tokenType.leftBrace, "{", 0),
+                new token(tokenType.halt, "halt", 0),
+                new token(tokenType.identity, "genericIdentity", 0),
+                new token(tokenType.rightBrace, "}", 0),
+                new token(tokenType.eof, "eof", 0)
+            };
+            Assert.That(actual, Is.EqualTo(expected));
+        }
+        [Test]
+        public void tokenizeShouldIgnoreWhitespaceBetweenTokens()
+        {
+            string source = "warn     halt\tinit  \ngenericIdentity";
+            tokenizer = new tokenizer(source);
+            List<token> actual = tokenizer.tokenize();
+            List<token> expected = new List<token>
+            {
+                new token(tokenType.warn, "warn", 0),
+                new token(tokenType.halt, "halt", 0),
+                new token(tokenType.init, "init", 0),
+                new token(tokenType.identity, "genericIdentity", 1),
+                new token(tokenType.eof, "eof", 1)
+            };
+            Assert.That(actual, Is.EqualTo(expected));
+        }
+        [Test]
+        public void tokenizeShouldTreatEofAsWhitespace()
+        {
+            string source = "warn eof halt";
+            tokenizer = new tokenizer(source);
+            List<token> actual = tokenizer.tokenize();
+            List<token> expected = new List<token>
+            {
+                new token(tokenType.warn, "warn", 0),
+                new token(tokenType.halt, "halt", 0),
+                new token(tokenType.eof, "eof", 0)
+            };
+            Assert.That(actual, Is.EqualTo(expected));
+        }
+    }
+}
