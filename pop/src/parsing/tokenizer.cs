@@ -1,5 +1,3 @@
-using pop.parsing;
-
 namespace src.parsing
 {
     public class tokenizer
@@ -23,6 +21,7 @@ namespace src.parsing
                     case ' ':
                     case '\t':
                     case '\0':
+                    case '\r':
                         break;
 
                     case '\n':
@@ -35,15 +34,27 @@ namespace src.parsing
                     case '}':
                         tokens.Add(new token(tokenType.rightBrace, "}", line));
                         break;
-                    case ';':
-                        tokens.Add(new token(tokenType.semiColon, ";", line));
-                        break;
                     case '=':
                         tokens.Add(new token(tokenType.equals, "=", line));
                         break;
 
                     default:
-                        if (char.IsLetter(current) || current == '_')
+                        if (current == '"')
+                        {
+                            while (currentIndex < source.Length && source[currentIndex] != '"')
+                                if (source[currentIndex] == '\\' && currentIndex + 1 < source.Length && source[currentIndex + 1] == '"')
+                                    currentIndex += 2;
+                                else
+                                    currentIndex++;
+
+                            currentIndex++;
+
+                            if (currentIndex > source.Length)
+                                throw new ArgumentOutOfRangeException();
+                            tokens.Add(new token(tokenType.stringLiteral, source[startIndex..currentIndex], line));
+                        }
+
+                        else if (char.IsLetter(current) || current == '_')
                         {
                             while (currentIndex < source.Length &&
                                 (char.IsLetterOrDigit(source[currentIndex]) ||
@@ -59,9 +70,9 @@ namespace src.parsing
                         }
                         else
                             throw new tokenizationException("unknown character", line, current.ToString());
+
                         break;
                 }
-
             }
 
             tokens.Add(new token(tokenType.eof, "eof", line));

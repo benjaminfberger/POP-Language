@@ -106,5 +106,21 @@ namespace tests
             };
             Assert.That(actual, Is.EqualTo(expected));
         }
+        [Test]
+        public void tokenizeShouldNotSplitStringLiteralsIntoMultipleTokens()
+        {
+            string source = "init\"sudo genericIdentity\"halt program";
+            tokenizer = new tokenizer(source);
+            List<token> actual = tokenizer.tokenize();
+            List<token> expected = new List<token>
+            {
+                new token(tokenType.init, "init", 0),
+                new token(tokenType.stringLiteral, "\"sudo genericIdentity\"", 0),
+                new token(tokenType.halt, "halt", 0),
+                new token(tokenType.program, "program", 0),
+                new token(tokenType.eof, "eof", 0)
+            };
+            Assert.That(actual, Is.EqualTo(expected));
+        }
     }
 }

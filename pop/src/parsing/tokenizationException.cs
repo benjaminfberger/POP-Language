@@ -1,4 +1,4 @@
-﻿namespace pop.parsing
+﻿namespace src.parsing
 {
     public class tokenizationException : Exception
     {

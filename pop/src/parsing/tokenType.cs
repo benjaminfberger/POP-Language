@@ -14,9 +14,9 @@ namespace src.parsing
         warn,
         leftBrace,
         rightBrace,
-        semiColon,
         equals,
         halt,
-        eof
+        eof,
+        stringLiteral
     }
 }
