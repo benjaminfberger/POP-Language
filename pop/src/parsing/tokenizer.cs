@@ -56,7 +56,7 @@ namespace src.parsing
 
                             currentIndex++;
 
-                            if (currentIndex > source.Length)
+                            if (currentIndex >= source.Length)
                                 throw new ArgumentOutOfRangeException();
                             tokens.Add(new token(tokenType.stringLiteral, source[startIndex..currentIndex], line));
                         }
