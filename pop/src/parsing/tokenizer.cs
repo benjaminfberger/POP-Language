@@ -38,7 +38,7 @@ namespace src.parsing
                         tokens.Add(new token(tokenType.leftParentheses, "(", line));
                         break;
                     case ')':
-                        tokens.Add(new token(tokenType.rightParenteses, ")", line));
+                        tokens.Add(new token(tokenType.rightParentheses, ")", line));
                         break;
 
                     case '=':
