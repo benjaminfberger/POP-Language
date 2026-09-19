@@ -14,6 +14,8 @@ namespace src.parsing
         warn,
         leftBrace,
         rightBrace,
+        leftParentheses,
+        rightParenteses,
         equals,
         halt,
         eof,

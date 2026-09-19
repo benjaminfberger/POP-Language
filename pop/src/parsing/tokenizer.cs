@@ -34,6 +34,13 @@ namespace src.parsing
                     case '}':
                         tokens.Add(new token(tokenType.rightBrace, "}", line));
                         break;
+                    case '(':
+                        tokens.Add(new token(tokenType.leftParentheses, "(", line));
+                        break;
+                    case ')':
+                        tokens.Add(new token(tokenType.rightParenteses, ")", line));
+                        break;
+
                     case '=':
                         tokens.Add(new token(tokenType.equals, "=", line));
                         break;

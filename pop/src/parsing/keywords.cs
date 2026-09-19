@@ -15,6 +15,8 @@ namespace src.parsing
             { "warn", tokenType.warn },
             { "{", tokenType.leftBrace },
             { "}", tokenType.rightBrace },
+            { "(", tokenType.leftParentheses },
+            { ")", tokenType.rightParenteses },
             { "=", tokenType.equals },
             { "halt", tokenType.halt },
             { "eof", tokenType.eof }
