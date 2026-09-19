@@ -122,5 +122,27 @@ namespace tests
             };
             Assert.That(actual, Is.EqualTo(expected));
         }
+        [Test]
+        public void tokenizeShouldFailOnUnclosedStringLiteral()
+        {
+            string source = "init\"halt";
+            tokenizer = new tokenizer(source);
+            Assert.Throws<ArgumentOutOfRangeException>(() => tokenizer.tokenize());
+        }
+        [Test]
+        public void tokenizeShouldTreatEmptyStringLiteralsAsStringLiterals()
+        {
+            string source = "init\"\"halt";
+            tokenizer = new tokenizer(source);
+            List<token> actual = tokenizer.tokenize();
+            List<token> expected = new List<token>
+            {
+                new token(tokenType.init, "init", 0),
+                new token(tokenType.stringLiteral, "\"\"", 0),
+                new token(tokenType.halt, "halt", 0),
+                new token(tokenType.eof, "eof", 0)
+            };
+            Assert.That(actual, Is.EqualTo(expected));
+        }
     }
 }
