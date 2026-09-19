@@ -18,6 +18,7 @@ namespace src.parsing
             { "(", tokenType.leftParentheses },
             { ")", tokenType.rightParentheses },
             { "=", tokenType.equals },
+            { "/", tokenType.divide },
             { "halt", tokenType.halt },
             { "eof", tokenType.eof }
         };

@@ -17,6 +17,7 @@ namespace src.parsing
         leftParentheses,
         rightParentheses,
         equals,
+        divide,
         halt,
         eof,
         stringLiteral

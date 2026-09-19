@@ -45,23 +45,38 @@ namespace src.parsing
                         tokens.Add(new token(tokenType.equals, "=", line));
                         break;
 
-                    default:
-                        if (current == '"')
+                    case '"':
+                        while (currentIndex < source.Length &&
+                            source[currentIndex] != '"')
+                            if (source[currentIndex] == '\\' &&
+                                currentIndex + 1 < source.Length &&
+                                source[currentIndex + 1] == '"')
+                                currentIndex += 2;
+                            else
+                                currentIndex++;
+
+                        currentIndex++;
+
+                        if (currentIndex >= source.Length)
+                            throw new ArgumentOutOfRangeException();
+                        tokens.Add(new token(tokenType.stringLiteral, source[startIndex..currentIndex], line));
+                        break;
+
+                    case '/':
+                        if (currentIndex < source.Length &&
+                            source[currentIndex] == '/')
                         {
-                            while (currentIndex < source.Length && source[currentIndex] != '"')
-                                if (source[currentIndex] == '\\' && currentIndex + 1 < source.Length && source[currentIndex + 1] == '"')
-                                    currentIndex += 2;
-                                else
-                                    currentIndex++;
-
-                            currentIndex++;
-
-                            if (currentIndex >= source.Length)
-                                throw new ArgumentOutOfRangeException();
-                            tokens.Add(new token(tokenType.stringLiteral, source[startIndex..currentIndex], line));
+                            currentIndex += 2;
+                            while (currentIndex < source.Length &&
+                                source[currentIndex] != '\n')
+                                currentIndex++;
                         }
+                        else
+                            tokens.Add(new token(tokenType.divide, "/", line));
+                        break;
 
-                        else if (char.IsLetter(current) || current == '_')
+                    default:
+                        if (char.IsLetter(current) || current == '_')
                         {
                             while (currentIndex < source.Length &&
                                 (char.IsLetterOrDigit(source[currentIndex]) ||
@@ -71,7 +86,8 @@ namespace src.parsing
                             string word = source[startIndex..currentIndex];
                             if (word != "eof")
                             {
-                                tokenType tokenType = keywords.table.TryGetValue(word, out var type) ? type : tokenType.identifier;
+                                tokenType tokenType = keywords.table.TryGetValue(word, out var type)
+                                    ? type : tokenType.identifier;
                                 tokens.Add(new token(tokenType, word, line));
                             }
                         }

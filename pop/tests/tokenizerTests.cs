@@ -144,5 +144,31 @@ namespace tests
             };
             Assert.That(actual, Is.EqualTo(expected));
         }
+        [Test]
+        public void tokenizeShouldDiscardComments()
+        {
+            string source = "init//this is a comment\nhalt";
+            tokenizer = new tokenizer(source);
+            List<token> actual = tokenizer.tokenize();
+            List<token> expected = new List<token>
+            {
+                new token(tokenType.init, "init", 0),
+                new token(tokenType.halt, "halt", 1),
+                new token(tokenType.eof, "eof", 1)
+            };
+            Assert.That(actual, Is.EqualTo(expected));
+        }
+        [Test]
+        public void tokenizeShouldNotReadDivideAsComment()
+        {
+            string source = "//this is a comment\n halt /";
+            tokenizer = new tokenizer(source);
+            List<token> actual = tokenizer.tokenize();
+            List<token> expected = new List<token>
+            {
+                new token(tokenType.halt, "halt", 1),
+                new token(tokenType.divide, "/", 1)
+            };
+        }
     }
 }
