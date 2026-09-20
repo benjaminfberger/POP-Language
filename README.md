@@ -1,2 +1,2 @@
 # POP Language
-[docs](https://github.com/dr-dinnerbone/POP-Language/blob/master/pop/docs/docs.md)
+[docs](https://github.com/benjaminfberger/POP-Language/blob/master/pop/docs/docs.md)
