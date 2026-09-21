@@ -1,70 +1,85 @@
 ﻿using src.parsing.ast;
-using System.Security;
-using System.Text.RegularExpressions;
 
 namespace src.parsing
 {
     public class parser
     {
         private readonly List<token> tokens;
-        private List<iProgramNode> ast;
+        private readonly List<iProgramNode> ast;
         private int pointer;
+
         public parser(List<token> tokens)
         {
-            pointer = 0;
-            ast = new List<iProgramNode>();
+            this.pointer = 0;
+            this.ast = new List<iProgramNode>();
             this.tokens = tokens;
         }
-        private token peek() => pointer + 1 < tokens.Count ? 
-            tokens[pointer + 1] : 
-            tokens[tokens.Count - 1];
+
+        // 1. FIXED: Current token is at 'pointer', not 'pointer + 1'
+        private token peek() => pointer < tokens.Count ? tokens[pointer] : tokens[tokens.Count - 1];
+
         private void consume() => pointer++;
-        private bool match(tokenType type)
+
+        // 2. FIXED: Match must advance the pointer when successful
+        private void match(tokenType type)
         {
-            if (peek().type == type) return true;
-            throw new parserException($"Unexpected token. Expected {type.ToString()}. Found {peek().type}.");
+            if (peek().type == type)
+            {
+                consume();
+                return;
+            }
+            throw new parserException($"Unexpected token. Expected {type}. Found {peek().type}.");
         }
+
         public List<iProgramNode> parse()
         {
             while (peek().type != tokenType.eof)
+            {
                 ast.Add(parseExpression());
-
+            }
             return ast;
         }
+
         public iProgramNode parseExpression()
         {
             token current = peek();
             switch (current.type)
             {
                 case tokenType.leftBrace:
-                    consume();
+                    consume(); // Consume '{'
                     List<iProgramNode> children = new List<iProgramNode>();
-                    while (peek().type != tokenType.rightBrace)
+
+                    while (peek().type != tokenType.rightBrace && peek().type != tokenType.eof)
+                    {
                         children.Add(parseExpression());
-                    match(tokenType.rightBrace);
+                    }
+
+                    match(tokenType.rightBrace); // Consumes '}' safely
                     return new invokeNode("block", new List<iProgramNode>(), children);
+
                 default:
                     return parseTerminal();
             }
         }
+
         public iProgramNode parseTerminal()
         {
             token current = peek();
             switch (current.type)
             {
                 case tokenType.stringLiteral:
-                    consume();
-                    return new terminalNode(current.value);
                 case tokenType.identifier:
                     consume();
                     return new terminalNode(current.value);
+
                 case tokenType.leftParentheses:
-                    consume();
-                    iProgramNode children = parseExpression();
-                    match(tokenType.rightParentheses);
-                    return children;
+                    consume(); // Consume '('
+                    iProgramNode expression = parseExpression();
+                    match(tokenType.rightParentheses); // Consumes ')' safely
+                    return expression;
+
                 default:
-                    throw new parserException($"Unexpected token. Found {current.type.ToString()}");
+                    throw new parserException($"Unexpected token. Found {current.type}");
             }
         }
     }
