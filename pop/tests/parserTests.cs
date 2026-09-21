@@ -20,17 +20,17 @@ namespace tests
         {
             List<token> tokens = new List<token>
             {
-                new token(tokenType.stringLiteral, "Hello, World!", 0),
+                new token(tokenType.stringLiteral, "\"Hello, World!\"", 0),
                 new token(tokenType.eof, "eof", 0)
             };
-            var parser = new parser(tokens);
+            parser = new parser(tokens);
             List<iProgramNode> actual = parser.parse();
 
             Assert.That(actual.Count, Is.EqualTo(1));
             Assert.That(actual[0], Is.InstanceOf<terminalNode>());
 
-            var terminal = actual[0] as terminalNode;
-            Assert.That(terminal.value, Is.EqualTo("Hello, World!"));
+            terminalNode terminal = actual[0] as terminalNode;
+            Assert.That(terminal.value, Is.EqualTo("\"Hello, World!\""));
         }
 
     }
