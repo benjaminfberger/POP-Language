@@ -1,8 +1,8 @@
 ﻿namespace src.parsing.ast
 {
     public abstract record iProgramNode(
-        string identifier,
+        string value,
         List<iProgramNode> parameters,
-        List<iProgramNode> body
+        List<iProgramNode> children
     );
 }
