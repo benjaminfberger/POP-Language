@@ -1,4 +1,5 @@
 ﻿using src.parsing;
+using NUnit.Framework;
 
 namespace tests
 {

@@ -15,12 +15,10 @@ namespace src.parsing
             this.tokens = tokens;
         }
 
-        // 1. FIXED: Current token is at 'pointer', not 'pointer + 1'
         private token peek() => pointer < tokens.Count ? tokens[pointer] : tokens[tokens.Count - 1];
 
         private void consume() => pointer++;
 
-        // 2. FIXED: Match must advance the pointer when successful
         private void match(tokenType type)
         {
             if (peek().type == type)
@@ -46,7 +44,7 @@ namespace src.parsing
             switch (current.type)
             {
                 case tokenType.leftBrace:
-                    consume(); // Consume '{'
+                    consume();
                     List<iProgramNode> children = new List<iProgramNode>();
 
                     while (peek().type != tokenType.rightBrace && peek().type != tokenType.eof)
@@ -54,7 +52,7 @@ namespace src.parsing
                         children.Add(parseExpression());
                     }
 
-                    match(tokenType.rightBrace); // Consumes '}' safely
+                    match(tokenType.rightBrace);
                     return new invokeNode("block", new List<iProgramNode>(), children);
 
                 default:
@@ -73,9 +71,9 @@ namespace src.parsing
                     return new terminalNode(current.value);
 
                 case tokenType.leftParentheses:
-                    consume(); // Consume '('
+                    consume();
                     iProgramNode expression = parseExpression();
-                    match(tokenType.rightParentheses); // Consumes ')' safely
+                    match(tokenType.rightParentheses);
                     return expression;
 
                 default:
