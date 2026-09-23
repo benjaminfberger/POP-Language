@@ -20,6 +20,7 @@ namespace src.parsing
         divide,
         halt,
         eof,
-        stringLiteral
+        stringLiteral, 
+        numberLiteral
     }
 }

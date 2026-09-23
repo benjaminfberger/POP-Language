@@ -1,5 +1,6 @@
 ﻿using src.parsing;
 using NUnit.Framework;
+using System.Runtime.Versioning;
 
 namespace tests
 {
@@ -146,6 +147,32 @@ namespace tests
             Assert.That(actual, Is.EqualTo(expected));
         }
         [Test]
+        public void tokenizeShouldNotFailOnStringLiteralAtEndOfSource()
+        {
+            string source = "\"Hello, World\"";
+            tokenizer = new tokenizer(source);
+            List<token> actual = tokenizer.tokenize();
+            List<token> expected = new List<token>
+            {
+                new token(tokenType.stringLiteral, "\"Hello, World\"", 0),
+                new token(tokenType.eof, "eof", 0)
+            };
+            Assert.That(actual, Is.EqualTo(expected));
+        }
+        [Test]
+        public void tokenizerShouldHandleEscapeSequencesWithinStringLiterals()
+        {
+            string source = "\"Hello,\\ \t World\"";
+            tokenizer = new tokenizer(source);
+            List<token> actual = tokenizer.tokenize();
+            List<token> expected = new List<token>
+            {
+                new token(tokenType.stringLiteral, "\"Hello,\\ \t World\"", 0),
+                new token(tokenType.eof, "eof", 0)
+            };
+            Assert.That(actual, Is.EqualTo(expected));
+        }
+        [Test]
         public void tokenizeShouldDiscardComments()
         {
             string source = "init//this is a comment\nhalt";
@@ -168,8 +195,38 @@ namespace tests
             List<token> expected = new List<token>
             {
                 new token(tokenType.halt, "halt", 1),
-                new token(tokenType.divide, "/", 1)
+                new token(tokenType.divide, "/", 1),
+                new token(tokenType.eof, "eof", 1)
             };
+            Assert.That(actual, Is.EqualTo(expected));
+        }
+        [Test]
+        public void tokenizeShouldNotTreatNumberLiteralsAsStringLiterals()
+        {
+            string source = "1234\"Hello, World\"";
+            tokenizer = new tokenizer(source);
+            List<token> actual = tokenizer.tokenize();
+            List<token> expected = new List<token>
+            {
+                new token(tokenType.numberLiteral, "1234", 0),
+                new token(tokenType.stringLiteral, "\"Hello, World\"", 0),
+                new token(tokenType.eof, "eof", 0)
+            };
+            Assert.That(actual, Is.EqualTo(expected));
+        }
+        [Test]
+        public void tokenizeShouldNotTreatNumberLiteralsAsIdentifiers()
+        {
+            string source = "1234 id3nt1fier";
+            tokenizer = new tokenizer(source);
+            List<token> actual = tokenizer.tokenize();
+            List<token> expected = new List<token>
+            {
+                new token(tokenType.numberLiteral, "1234", 0),
+                new token(tokenType.identifier, "id3nt1fier", 0),
+                new token(tokenType.eof, "eof", 0)
+            };
+            Assert.That(actual, Is.EqualTo(expected));
         }
     }
 }

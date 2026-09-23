@@ -57,7 +57,7 @@ namespace src.parsing
 
                         currentIndex++;
 
-                        if (currentIndex >= source.Length)
+                        if (currentIndex > source.Length)
                             throw new ArgumentOutOfRangeException();
                         tokens.Add(new token(tokenType.stringLiteral, source[startIndex..currentIndex], line));
                         break;
@@ -91,9 +91,17 @@ namespace src.parsing
                                 tokens.Add(new token(tokenType, word, line));
                             }
                         }
+                        else if (char.IsNumber(current))
+                        {
+                            while (currentIndex < source.Length &&
+                                char.IsNumber(source[currentIndex]))
+                                currentIndex++;
+
+                            string num = source[startIndex..currentIndex];
+                            tokens.Add(new token(tokenType.numberLiteral, num, line));
+                        }
                         else
                             throw new tokenizationException("unknown character", line, current.ToString());
-
                         break;
                 }
             }
